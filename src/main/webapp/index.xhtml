@@ -1,68 +1,90 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
-
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
     <h:head>
-        <title>First task</title>
+        <title>Task 1</title>
     </h:head>
-    <h:body>
-        <h:form>  
-            First Name: <h:inputText id="firstname" value="#{student.firstname}" required="true" requiredMessage="First name is required" /><br/>  
-            Middle Name: <h:inputText id="middlename" value="#{student.middlename}" required="false" /><br/>
-            Last Name: <h:inputText id="lastname" required="true" value="#{student.lastname}" requiredMessage="Last name is required" /><br/> 
-            Faculty: <h:selectOneMenu id="faculty" required="true" requiredMessage="Faculty is required" value="#{student.faculty}">
-                <f:selectItem itemValue="Management" itemLabel="Management"/>
-                <f:selectItem itemValue="Science and technology" itemLabel="Science and Technology"/>
-                <f:ajax render="program"/>
-            </h:selectOneMenu>
-            <br/>
 
-            <h:panelGroup id="program">
-                Program<h:selectOneMenu value="#{student.program}" rendered="#{student.faculty == 'Management'}" required="true" >
-                    <f:selectItem itemValue="BBA" itemLabel="BBA"/>
-                    <f:selectItem itemValue="BBS" itemLabel="BBS"/>
+    <body>
+        <h:panelGroup rendered="#{!studentBean.edit}">
+            <h2>Add Students</h2><br/>
+            <h:form>  
+                First Name: <h:inputText id="firstname" value="#{studentBean.item.firstname}" required="true" requiredMessage="First name is required" /><br/>  
+                Middle Name: <h:inputText id="middlename" value="#{studentBean.item.middlename}" required="false" /><br/>
+                Last Name: <h:inputText id="lastname" required="true" value="#{studentBean.item.lastname}" requiredMessage="Last name is required" /><br/> 
+                Faculty: <h:selectOneMenu id="faculty" required="true" requiredMessage="Faculty is required" value="#{studentBean.item.faculty}">
+                    <f:selectItem itemValue="#{null}" itemLabel="Select"/>
+                    <f:selectItem itemValue="Management" itemLabel="Management"/>
+                    <f:selectItem itemValue="Science and technology" itemLabel="Science and Technology"/>
+                    <f:ajax render="program"/>
                 </h:selectOneMenu>
-                <h:selectOneMenu value="#{student.program}" rendered="#{student.faculty == 'Science and technology'}" required="true" >
-                    <f:selectItem itemValue="BE.Comp" itemLabel="BE.Comp"/>
-                    <f:selectItem itemValue="BCA" itemLabel="BCA"/>
-                </h:selectOneMenu>
+                <br/>
+                <h:panelGroup id="program">
+                    Program<h:selectOneMenu value="#{studentBean.item.program}" rendered="#{studentBean.item.faculty == 'Management'}" required="true" >
+                        <f:selectItem itemValue="#{null}" itemLabel="Select"/>
+                        <f:selectItem itemValue="BBA" itemLabel="BBA"/>
+                        <f:selectItem itemValue="BBS" itemLabel="BBS"/>
+                    </h:selectOneMenu>
+                    <h:selectOneMenu value="#{studentBean.item.program}" rendered="#{studentBean.item.faculty == 'Science and technology'}" required="true" >
+                        <f:selectItem itemValue="#{null}" itemLabel="Select"/>
+                        <f:selectItem itemValue="BE.Comp" itemLabel="BE.Comp"/>
+                        <f:selectItem itemValue="BCA" itemLabel="BCA"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+                <br/>
+                <h:commandButton value="Add" action="#{studentBean.add}"/>  
+                <h:commandButton value="Reset" action="#{studentBean.reset}"/>  
+            </h:form>
         </h:panelGroup>
-            <br/>
+        <h:panelGroup rendered="#{studentBean.edit}">
+            <h2>Edit Student: #{studentBean.item.firstname}</h2><br/>
+            <h:form>  
+                First Name: <h:inputText id="firstname" value="#{studentBean.item.firstname}" required="true" requiredMessage="First name is required" /><br/>  
+                Middle Name: <h:inputText id="middlename" value="#{studentBean.item.middlename}" required="false" /><br/>
+                Last Name: <h:inputText id="lastname" required="true" value="#{studentBean.item.lastname}" requiredMessage="Last name is required" /><br/> 
+                Faculty: <h:selectOneMenu id="faculty" required="true" requiredMessage="Faculty is required" value="#{studentBean.item.faculty}">
+                    <f:selectItem itemValue="#{null}" itemLabel="Select"/>
+                    <f:selectItem itemValue="Management" itemLabel="Management"/>
+                    <f:selectItem itemValue="Science and technology" itemLabel="Science and Technology"/>
+                    <f:ajax render="program"/>
+                </h:selectOneMenu>
+                <br/>
+                <h:panelGroup id="program">
+                    Program<h:selectOneMenu rendered="#{studentBean.item.faculty == 'Management'}" required="true"  value="#{studentBean.item.program}">
+                        <f:selectItem itemValue="#{null}" itemLabel="Select"/>
+                        <f:selectItem itemValue="BBA" itemLabel="BBA"/>
+                        <f:selectItem itemValue="BBS" itemLabel="BBS"/>
+                    </h:selectOneMenu>
+                    <h:selectOneMenu rendered="#{studentBean.item.faculty == 'Science and technology'}" required="true" value="#{studentBean.item.program}">
+                        <f:selectItem itemValue="#{null}" itemLabel="Select"/>
+                        <f:selectItem itemValue="BE.Comp" itemLabel="BE.Comp"/>
+                        <f:selectItem itemValue="BCA" itemLabel="BCA"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+                <br/>
+                <h:commandButton value="Save" action="#{studentBean.saveEdit}"/>  
+                <h:commandButton value="Cancel" action="#{studentBean.saveEdit}"/>  
+            </h:form>
+        </h:panelGroup>
 
-
-
-            <h:commandButton id="submit-button" value="Submit" action="index.xhtml"/>  
+        <h3>List of Students</h3>
+        <h:form rendered="#{not empty studentBean.list}">
+            <h:dataTable value="#{studentBean.list}" var="item">
+                <h:column><f:facet name="header">First Name</f:facet>#{item.firstname}</h:column>
+                <h:column><f:facet name="header">Middle Name</f:facet>#{item.middlename}</h:column>
+                <h:column><f:facet name="header">Last Name</f:facet>#{item.lastname}</h:column>
+                <h:column><f:facet name="header">Faculty</f:facet>#{item.faculty}</h:column>
+                <h:column><f:facet name="header">Program</f:facet>#{item.program}</h:column>
+                <h:column>
+                    <f:facet name="header">Action</f:facet>
+                    <h:commandButton value="edit" action="#{studentBean.edit(item)}" />               
+                    <h:commandButton value="delete" action="#{studentBean.delete(item)}" />
+                </h:column>
+            </h:dataTable>
         </h:form>
 
-        <h:dataTable value="#{student}">
-
-            <h:column>    				
-                <f:facet name = "header">First name   </f:facet>    				
-                    #{student.firstname}
-            </h:column>
-
-            <h:column>
-                <f:facet name = "header">Middle name   </f:facet>
-                    #{student.middlename}
-            </h:column>
-
-            <h:column>
-                <f:facet name = "header">Last name   </f:facet>
-                    #{student.lastname}
-            </h:column>
-            <h:column>
-                <f:facet name = "header">Faculty   </f:facet>
-                    #{student.faculty}
-            </h:column>
-            <h:column>
-                <f:facet name = "header">Program   </f:facet>
-                    #{student.program}
-            </h:column>
-        </h:dataTable>
-    </h:body>
+       
+    </body>
 </html>
-

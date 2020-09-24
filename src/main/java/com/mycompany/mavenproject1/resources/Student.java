@@ -5,28 +5,40 @@
  */
 package com.mycompany.mavenproject1.resources;
 
-import javax.faces.bean.ManagedBean;
 import java.util.*;
-import javax.faces.bean.SessionScoped;
 
 /**
  *
  * @author Dipankar
  */
-@ManagedBean
-@SessionScoped
 public class Student {
-    private String firstname;
-    private String middlename;
-    private String lastname;
-    private String faculty;
-    private String program;
-        
-    public Student(){
-        
+
+    String firstname;
+    String middlename;
+    String lastname;
+    String faculty;
+    String program;
+    int id;
+
+    public Student() {
     }
-    
-    //gettera setter
+
+    public Student(int id, String firstname, String middlename, String lastname, String faculty, String program) {
+        this.id = id;
+        this.firstname = firstname;
+        this.middlename = middlename;
+        this.lastname = lastname;
+        this.faculty = faculty;
+        this.program = program;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getFirstname() {
         return firstname;
@@ -67,13 +79,15 @@ public class Student {
     public void setProgram(String program) {
         this.program = program;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+    public void restore(Student student) {
+        this.id = student.getId();
+        this.firstname = student.getFirstname();
+        this.middlename = student.getMiddlename();
+        this.lastname = student.getLastname();
+        this.faculty = student.getFaculty();
+        this.program = student.getProgram();
+
+    }
+
 }
